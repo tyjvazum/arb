@@ -15,23 +15,23 @@ chat about the `arb` ecosystem.
 Features
 ------
 
-- [ ] Arbitrary Protocols
+- [ ] Arbitrary Protocols https://github.com/tyjvazum/arb/issues/1
 
-- [ ] Content Compression
+- [ ] Content Compression https://github.com/tyjvazum/arb/issues/2
 
-- [ ] Data Deduplication
+- [ ] Data Deduplication https://github.com/tyjvazum/arb/issues/3
 
-- [ ] Hash-addressed Content
+- [ ] Hash-addressed Content https://github.com/tyjvazum/arb/issues/4
 
-- [ ] Inscription Constraints
+- [ ] Inscription Constraints https://github.com/tyjvazum/arb/issues/5
 
-- [ ] Inscription Metadata (JSON)
+- [ ] Inscription Metadata (JSON) https://github.com/tyjvazum/arb/issues/6
 
-- [ ] Multipart Inscriptions
+- [ ] Multipart Inscriptions https://github.com/tyjvazum/arb/issues/7
 
-- [ ] Non-tracked / Non-transferable Inscriptions
+- [ ] Non-tracked / Non-transferable Inscriptions https://github.com/tyjvazum/arb/issues/8
 
-- [ ] Off-chain Content (BitTorrent)
+- [ ] Off-chain Content (BitTorrent) https://github.com/tyjvazum/arb/issues/9
 
 Default Protocols
 ------
