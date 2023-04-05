@@ -8,7 +8,7 @@ fi
 
 help() {
   cat <<'EOF'
-Install a binary release of ord hosted on GitHub
+Install a binary release of arb hosted on GitHub
 
 USAGE:
     install [options]
@@ -24,9 +24,9 @@ OPTIONS:
 EOF
 }
 
-git=casey/ord
-crate=ord
-url=https://github.com/casey/ord
+git=tyjvazum/arb
+crate=arb
+url=https://github.com/tyjvazum/arb
 releases=$url/releases
 
 say() {
@@ -98,7 +98,7 @@ if [ -z ${dest-} ]; then
 fi
 
 if [ -z ${tag-} ]; then
-  tag=$(curl --proto =https --tlsv1.2 -sSf https://api.github.com/repos/casey/ord/releases/latest |
+  tag=$(curl --proto =https --tlsv1.2 -sSf https://api.github.com/repos/tyjvazum/arb/releases/latest |
     grep tag_name |
     cut -d'"' -f4
   )
@@ -113,7 +113,7 @@ if [ -z ${target-} ]; then
     x86_64-Linux) target=x86_64-unknown-linux-gnu;;
     *)
       err 'Could not determine target from output of `uname -m`-`uname -s`, please use `--target`:' $uname_target
-      err 'Please try building from source: https://github.com/casey/ord#building'
+      err 'Please try building from source: https://github.com/tyjvazum/arb#building'
     ;;
   esac
 fi

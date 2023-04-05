@@ -2,12 +2,12 @@
 
 set -euxo pipefail
 
-systemctl stop ord-dev
+systemctl stop arb-dev
 
-rm -rf /var/lib/ord-dev
+rm -rf /var/lib/arb-dev
 
-journalctl --unit ord-dev --rotate
+journalctl --unit arb-dev --rotate
 
-journalctl --unit ord-dev --vacuum-time 1s
+journalctl --unit arb-dev --vacuum-time 1s
 
 ./bin/update-dev-server

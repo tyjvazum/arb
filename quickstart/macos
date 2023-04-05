@@ -31,10 +31,10 @@ fi
 # check bitcoind
 bitcoin-cli getblockchaininfo | grep signet
 
-# install ord
-if ! command -v ord; then
-  curl --proto '=https' --tlsv1.2 -fsLS https://ordinals.com/install.sh | bash -s
+# install arb
+if ! command -v arb; then
+  curl --proto '=https' --tlsv1.2 -fsLS https://raw.githubusercontent.com/tyjvazum/arb/master/install.sh | bash -s
 fi
 
-# check ord
-ord --version
+# check arb
+arb --version

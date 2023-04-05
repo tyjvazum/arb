@@ -10,7 +10,7 @@ sudo \
   RUST_LOG=info \
   cargo flamegraph \
   --deterministic \
-  --bin ord \
+  --bin arb \
   -- \
   --chain signet \
   --data-dir . \
@@ -24,7 +24,7 @@ rm -f flamegraph.svg
   RUST_LOG=info \
   cargo flamegraph \
   --deterministic \
-  --bin ord \
+  --bin arb \
   -- \
   --chain signet \
   --data-dir . \

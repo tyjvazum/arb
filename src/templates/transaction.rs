@@ -2,69 +2,73 @@ use super::*;
 
 #[derive(Boilerplate)]
 pub(crate) struct TransactionHtml {
-  blockhash: Option<BlockHash>,
-  chain: Chain,
-  inscription: Option<InscriptionId>,
-  transaction: Transaction,
-  txid: Txid,
+    blockhash: Option<BlockHash>,
+    chain: Chain,
+    inscription: Option<InscriptionId>,
+    transaction: Transaction,
+    txid: Txid,
 }
 
 impl TransactionHtml {
-  pub(crate) fn new(
-    transaction: Transaction,
-    blockhash: Option<BlockHash>,
-    inscription: Option<InscriptionId>,
-    chain: Chain,
-  ) -> Self {
-    Self {
-      txid: transaction.txid(),
-      blockhash,
-      chain,
-      inscription,
-      transaction,
+    pub(crate) fn new(
+        transaction: Transaction,
+        blockhash: Option<BlockHash>,
+        inscription: Option<InscriptionId>,
+        chain: Chain,
+    ) -> Self {
+        Self {
+            txid: transaction.txid(),
+            blockhash,
+            chain,
+            inscription,
+            transaction,
+        }
     }
-  }
 }
 
 impl PageContent for TransactionHtml {
-  fn title(&self) -> String {
-    format!("Transaction {}", self.txid)
-  }
+    fn title(&self) -> String {
+        format!("Transaction {}", self.txid)
+    }
 }
 
 #[cfg(test)]
 mod tests {
-  use {
-    super::*,
-    bitcoin::{blockdata::script, PackedLockTime, TxOut},
-  };
-
-  #[test]
-  fn html() {
-    let transaction = Transaction {
-      version: 0,
-      lock_time: PackedLockTime(0),
-      input: vec![TxIn {
-        sequence: Default::default(),
-        previous_output: Default::default(),
-        script_sig: Default::default(),
-        witness: Default::default(),
-      }],
-      output: vec![
-        TxOut {
-          value: 50 * COIN_VALUE,
-          script_pubkey: script::Builder::new().push_int(0).into_script(),
+    use {
+        super::*,
+        bitcoin::{
+            blockdata::script,
+            PackedLockTime,
+            TxOut,
         },
-        TxOut {
-          value: 50 * COIN_VALUE,
-          script_pubkey: script::Builder::new().push_int(1).into_script(),
-        },
-      ],
     };
 
-    let txid = transaction.txid();
+    #[test]
+    fn html() {
+        let transaction = Transaction {
+            version: 0,
+            lock_time: PackedLockTime(0),
+            input: vec![TxIn {
+                sequence: Default::default(),
+                previous_output: Default::default(),
+                script_sig: Default::default(),
+                witness: Default::default(),
+            }],
+            output: vec![
+                TxOut {
+                    value: 50 * COIN_VALUE,
+                    script_pubkey: script::Builder::new().push_int(0).into_script(),
+                },
+                TxOut {
+                    value: 50 * COIN_VALUE,
+                    script_pubkey: script::Builder::new().push_int(1).into_script(),
+                },
+            ],
+        };
 
-    pretty_assert_eq!(
+        let txid = transaction.txid();
+
+        pretty_assert_eq!(
       TransactionHtml::new(transaction, None, None, Chain::Mainnet).to_string(),
       format!(
         "
@@ -98,29 +102,29 @@ mod tests {
       )
       .unindent()
     );
-  }
+    }
 
-  #[test]
-  fn with_blockhash() {
-    let transaction = Transaction {
-      version: 0,
-      lock_time: PackedLockTime(0),
-      input: Vec::new(),
-      output: vec![
-        TxOut {
-          value: 50 * COIN_VALUE,
-          script_pubkey: script::Builder::new().push_int(0).into_script(),
-        },
-        TxOut {
-          value: 50 * COIN_VALUE,
-          script_pubkey: script::Builder::new().push_int(1).into_script(),
-        },
-      ],
-    };
+    #[test]
+    fn with_blockhash() {
+        let transaction = Transaction {
+            version: 0,
+            lock_time: PackedLockTime(0),
+            input: Vec::new(),
+            output: vec![
+                TxOut {
+                    value: 50 * COIN_VALUE,
+                    script_pubkey: script::Builder::new().push_int(0).into_script(),
+                },
+                TxOut {
+                    value: 50 * COIN_VALUE,
+                    script_pubkey: script::Builder::new().push_int(1).into_script(),
+                },
+            ],
+        };
 
-    assert_regex_match!(
-      TransactionHtml::new(transaction, Some(blockhash(0)), None, Chain::Mainnet),
-      "
+        assert_regex_match!(
+            TransactionHtml::new(transaction, Some(blockhash(0)), None, Chain::Mainnet),
+            "
         <h1>Transaction <span class=monospace>[[:xdigit:]]{64}</span></h1>
         <dl>
           <dt>block</dt>
@@ -128,7 +132,7 @@ mod tests {
         </dl>
         .*
       "
-      .unindent()
-    );
-  }
+            .unindent()
+        );
+    }
 }

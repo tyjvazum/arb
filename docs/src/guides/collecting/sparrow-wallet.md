@@ -1,9 +1,9 @@
 Collecting Inscriptions and Ordinals with Sparrow Wallet
 =====================
 
-Users who cannot or have not yet set up the [ord](https://github.com/casey/ord) wallet can receive inscriptions and ordinals with alternative bitcoin wallets, as long as they are _very_ careful about how they spend from that wallet.
+Users who cannot or have not yet set up the [arb](https://github.com/tyjvazum/arb) wallet can receive inscriptions and ordinals with alternative bitcoin wallets, as long as they are _very_ careful about how they spend from that wallet.
 
-This guide gives some basic steps on how to create a wallet with [Sparrow Wallet](https://sparrowwallet.com/) which is compatible with `ord` and can be later imported into `ord`
+This guide gives some basic steps on how to create a wallet with [Sparrow Wallet](https://sparrowwallet.com/) which is compatible with `arb` and can be later imported into `arb`
 
 ## ⚠️⚠️ Warning!! ⚠️⚠️
 As a general rule if you take this approach, you should use this wallet with the Sparrow software as a receive-only wallet.
@@ -14,7 +14,7 @@ Do not spend any satoshis from this wallet unless you are sure you know what you
 
 Download the Sparrow Wallet from the [releases page](https://sparrowwallet.com/download/) for your particular operating system.
 
-Select `File -> New Wallet` and create a new wallet called `ord`.
+Select `File -> New Wallet` and create a new wallet called `arb`.
 
 ![](images/wallet_setup_01.png)
 
@@ -44,7 +44,7 @@ Click `Apply`. Add a password for the wallet if you want to.
 
 ![](images/wallet_setup_07.png)
 
-You now have a wallet which is compatible with `ord`, and can be imported into `ord` using the BIP39 Seed Phrase. To receive ordinals or inscriptions, click on the `Receive` tab and copy a new address.
+You now have a wallet which is compatible with `arb`, and can be imported into `arb` using the BIP39 Seed Phrase. To receive ordinals or inscriptions, click on the `Receive` tab and copy a new address.
 
 Each time you want to receive you should use a brand-new address, and not re-use existing addresses.
 
@@ -76,31 +76,31 @@ To do this, go to the `UTXOs` tab, find the UTXO you want to freeze, right-click
 
 This UTXO (Inscription) is now un-spendable within the Sparrow Wallet until you unfreeze it.
 
-## Importing into `ord` wallet
+## Importing into `arb` wallet
 
-For details on setting up Bitcoin Core and the `ord` wallet check out the [Inscriptions Guide](../inscriptions.md)
+For details on setting up Bitcoin Core and the `arb` wallet check out the [Inscriptions Guide](../inscriptions.md)
 
-When setting up `ord`, instead of running `ord wallet create` to create a brand-new wallet, you can import your existing wallet using `ord wallet restore "BIP39 SEED PHRASE"` using the seed phrase you generated with Sparrow Wallet.
+When setting up `arb`, instead of running `arb wallet create` to create a brand-new wallet, you can import your existing wallet using `arb wallet restore "BIP39 SEED PHRASE"` using the seed phrase you generated with Sparrow Wallet.
 
-There is currently a [bug](https://github.com/casey/ord/issues/1589) which causes an imported wallet to not be automatically rescanned against the blockchain. To work around this you will need to manually trigger a rescan using the bitcoin core cli:
-`bitcoin-cli -rpcwallet=ord rescanblockchain 767430`
+There is currently a [bug](https://github.com/tyjvazum/arb/issues/1589) which causes an imported wallet to not be automatically rescanned against the blockchain. To work around this you will need to manually trigger a rescan using the bitcoin core cli:
+`bitcoin-cli -rpcwallet=arb rescanblockchain 767430`
 
-You can then check your wallet's inscriptions using `ord wallet inscriptions`
+You can then check your wallet's inscriptions using `arb wallet inscriptions`
 
-Note that if you have previously created a wallet with `ord`, then you will already have a wallet with the default name, and will need to give your imported wallet a different name. You can use the `--wallet` parameter in all `ord` commands to reference a different wallet, eg:
+Note that if you have previously created a wallet with `arb`, then you will already have a wallet with the default name, and will need to give your imported wallet a different name. You can use the `--wallet` parameter in all `arb` commands to reference a different wallet, eg:
 
-`ord --wallet ord_from_sparrow restore "BIP39 SEED PHRASE"`
+`arb --wallet arb_from_sparrow restore "BIP39 SEED PHRASE"`
 
-`ord --wallet ord_from_sparrow wallet inscriptions`
+`arb --wallet arb_from_sparrow wallet inscriptions`
 
-`bitcoin-cli -rpcwallet=ord_from_sparrow rescanblockchain 767430`
+`bitcoin-cli -rpcwallet=arb_from_sparrow rescanblockchain 767430`
 
 ## Sending inscriptions with Sparrow Wallet
 
 #### ⚠️⚠️ Warning ⚠️⚠️
-While it is highly recommended that you set up a bitcoin core node and run the `ord` software, there are certain limited ways you can send inscriptions out of Sparrow Wallet in a safe way. Please note that this is not recommended, and you should only do this if you fully understand what you are doing.
+While it is highly recommended that you set up a bitcoin core node and run the `arb` software, there are certain limited ways you can send inscriptions out of Sparrow Wallet in a safe way. Please note that this is not recommended, and you should only do this if you fully understand what you are doing.
 
-Using the `ord` software will remove much of the complexity we are describing here, as it is able to automatically and safely handle sending inscriptions in an easy way.
+Using the `arb` software will remove much of the complexity we are describing here, as it is able to automatically and safely handle sending inscriptions in an easy way.
 
 #### ⚠️⚠️ Additional Warning ⚠️⚠️
 Don't use your sparrow inscriptions wallet to do general sends of non-inscription bitcoin. You can setup a separate wallet in sparrow if you need to do normal bitcoin transactions, and keep your inscriptions wallet separate.
@@ -144,7 +144,7 @@ You will then be presented with the transaction construction interface. There is
 * The transaction should have only 1 input, and this should be the UTXO with the label you want to send
 * The transaction should have only 1 output, which is the address/label where you want to send the inscription
 
-If your transaction looks any different, for example you have multiple inputs, or multiple outputs then this may not be a safe transfer of your inscription, and you should abandon sending until you understand more, or can import into the `ord` wallet.
+If your transaction looks any different, for example you have multiple inputs, or multiple outputs then this may not be a safe transfer of your inscription, and you should abandon sending until you understand more, or can import into the `arb` wallet.
 
 You should set an appropriate transaction fee, Sparrow will usually recommend a reasonable one, but you can also check [mempool.space](https://mempool.space) to see what the recommended fee rate is for sending a transaction.
 

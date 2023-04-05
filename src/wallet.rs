@@ -1,13 +1,13 @@
 use super::*;
 
 pub(crate) struct Wallet {
-  _private: (),
+    _private: (),
 }
 
 impl Wallet {
-  pub(crate) fn load(options: &Options) -> Result<Self> {
-    options.bitcoin_rpc_client_for_wallet_command(false)?;
+    pub(crate) fn load(options: &Options) -> Result<Self> {
+        options.bitcoin_rpc_client_for_wallet_command(false)?;
 
-    Ok(Self { _private: () })
-  }
+        Ok(Self { _private: () })
+    }
 }

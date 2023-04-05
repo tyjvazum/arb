@@ -11,11 +11,11 @@ sed -i -E 's/#?PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/s
 
 mkdir -p \
   /etc/systemd/system/bitcoind.service.d \
-  /etc/systemd/system/ord.service.d
+  /etc/systemd/system/arb.service.d
 
 printf "[Service]\nEnvironment=CHAIN=%s\n" $CHAIN \
   | tee /etc/systemd/system/bitcoind.service.d/override.conf \
-  > /etc/systemd/system/ord.service.d/override.conf
+  > /etc/systemd/system/arb.service.d/override.conf
 
 hostnamectl set-hostname $DOMAIN
 
@@ -69,13 +69,13 @@ source ~/.cargo/env
 rustup update stable
 
 cargo build --release
-if [[ -f /usr/local/bin/ord ]]; then
-  mv /usr/local/bin/ord /usr/local/bin/ord.bak
+if [[ -f /usr/local/bin/arb ]]; then
+  mv /usr/local/bin/arb /usr/local/bin/arb.bak
 fi
-cp target/release/ord /usr/local/bin/ord
+cp target/release/arb /usr/local/bin/arb
 
 id --user bitcoin || useradd --system bitcoin
-id --user ord || useradd --system ord
+id --user arb || useradd --system arb
 
 cp deploy/bitcoind.service /etc/systemd/system/
 mkdir -p /etc/bitcoin
@@ -105,17 +105,17 @@ while [[ ! -f $COOKIE_FILE_DIR/.cookie ]]; do
   sleep 1
 done
 
-setfacl -m ord:x /var/lib/bitcoind
-setfacl -m ord:x $COOKIE_FILE_DIR
-setfacl -dm ord:r $COOKIE_FILE_DIR
-setfacl -m ord:r $COOKIE_FILE_DIR/.cookie
+setfacl -m arb:x /var/lib/bitcoind
+setfacl -m arb:x $COOKIE_FILE_DIR
+setfacl -dm arb:r $COOKIE_FILE_DIR
+setfacl -m arb:r $COOKIE_FILE_DIR/.cookie
 
-cp deploy/ord.service /etc/systemd/system/
+cp deploy/arb.service /etc/systemd/system/
 systemctl daemon-reload
-systemctl enable ord
-systemctl restart ord
+systemctl enable arb
+systemctl restart arb
 
 while ! curl --fail https://$DOMAIN/status; do
-  echo "Waiting for ord at https://$DOMAIN/status…"
+  echo "Waiting for arb at https://$DOMAIN/status…"
   sleep 1
 done

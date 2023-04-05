@@ -1,6 +1,12 @@
-edition = "2018"
+edition = "2021"
 max_width = 100
 newline_style = "Unix"
-tab_spaces = 2
+tab_spaces = 4
 use_field_init_shorthand = true
 use_try_shorthand = true
+fn_params_layout = "Vertical"
+hex_literal_case = "Upper"
+imports_granularity = "One"
+imports_layout = "Vertical"
+match_block_trailing_comma = true
+wrap_comments = true

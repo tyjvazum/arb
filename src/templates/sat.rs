@@ -2,32 +2,32 @@ use super::*;
 
 #[derive(Boilerplate)]
 pub(crate) struct SatHtml {
-  pub(crate) sat: Sat,
-  pub(crate) satpoint: Option<SatPoint>,
-  pub(crate) blocktime: Blocktime,
-  pub(crate) inscription: Option<InscriptionId>,
+    pub(crate) sat: Sat,
+    pub(crate) satpoint: Option<SatPoint>,
+    pub(crate) blocktime: Blocktime,
+    pub(crate) inscription: Option<InscriptionId>,
 }
 
 impl PageContent for SatHtml {
-  fn title(&self) -> String {
-    format!("Sat {}", self.sat)
-  }
+    fn title(&self) -> String {
+        format!("Sat {}", self.sat)
+    }
 }
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+    use super::*;
 
-  #[test]
-  fn first() {
-    assert_regex_match!(
-      SatHtml {
-        sat: Sat(0),
-        satpoint: None,
-        blocktime: Blocktime::confirmed(0),
-        inscription: None,
-      },
-      "
+    #[test]
+    fn first() {
+        assert_regex_match!(
+            SatHtml {
+                sat: Sat(0),
+                satpoint: None,
+                blocktime: Blocktime::confirmed(0),
+                inscription: None,
+            },
+            "
         <h1>Sat 0</h1>
         <dl>
           <dt>decimal</dt><dd>0.0</dd>
@@ -47,20 +47,20 @@ mod tests {
         <a class=next href=/sat/1>next</a>
         .*
       "
-      .unindent()
-    );
-  }
+            .unindent()
+        );
+    }
 
-  #[test]
-  fn last() {
-    assert_regex_match!(
-      SatHtml {
-        sat: Sat(2099999997689999),
-        satpoint: None,
-        blocktime: Blocktime::confirmed(0),
-        inscription: None,
-      },
-      "
+    #[test]
+    fn last() {
+        assert_regex_match!(
+            SatHtml {
+                sat: Sat(2099999997689999),
+                satpoint: None,
+                blocktime: Blocktime::confirmed(0),
+                inscription: None,
+            },
+            "
         <h1>Sat 2099999997689999</h1>
         <dl>
           <dt>decimal</dt><dd>6929999.0</dd>
@@ -80,59 +80,59 @@ mod tests {
         next
         .*
       "
-      .unindent()
-    );
-  }
+            .unindent()
+        );
+    }
 
-  #[test]
-  fn sat_with_next_and_prev() {
-    assert_regex_match!(
-      SatHtml {
-        sat: Sat(1),
-        satpoint: None,
-        blocktime: Blocktime::confirmed(0),
-        inscription: None,
-      },
-      r"<h1>Sat 1</h1>.*<a class=prev href=/sat/0>prev</a>\n<a class=next href=/sat/2>next</a>.*",
-    );
-  }
+    #[test]
+    fn sat_with_next_and_prev() {
+        assert_regex_match!(
+            SatHtml {
+                sat: Sat(1),
+                satpoint: None,
+                blocktime: Blocktime::confirmed(0),
+                inscription: None,
+            },
+            r"<h1>Sat 1</h1>.*<a class=prev href=/sat/0>prev</a>\n<a class=next href=/sat/2>next</a>.*",
+        );
+    }
 
-  #[test]
-  fn sat_with_inscription() {
-    assert_regex_match!(
-      SatHtml {
-        sat: Sat(0),
-        satpoint: None,
-        blocktime: Blocktime::confirmed(0),
-        inscription: Some(inscription_id(1)),
-      },
-      r"<h1>Sat 0</h1>.*<dt>inscription</dt><dd class=thumbnails><a href=/inscription/1{64}i1>.*</a></dd>.*",
-    );
-  }
+    #[test]
+    fn sat_with_inscription() {
+        assert_regex_match!(
+            SatHtml {
+                sat: Sat(0),
+                satpoint: None,
+                blocktime: Blocktime::confirmed(0),
+                inscription: Some(inscription_id(1)),
+            },
+            r"<h1>Sat 0</h1>.*<dt>inscription</dt><dd class=thumbnails><a href=/inscription/1{64}i1>.*</a></dd>.*",
+        );
+    }
 
-  #[test]
-  fn last_sat_next_link_is_disabled() {
-    assert_regex_match!(
-      SatHtml {
-        sat: Sat::LAST,
-        satpoint: None,
-        blocktime: Blocktime::confirmed(0),
-        inscription: None,
-      },
-      r"<h1>Sat 2099999997689999</h1>.*<a class=prev href=/sat/2099999997689998>prev</a>\nnext.*",
-    );
-  }
+    #[test]
+    fn last_sat_next_link_is_disabled() {
+        assert_regex_match!(
+            SatHtml {
+                sat: Sat::LAST,
+                satpoint: None,
+                blocktime: Blocktime::confirmed(0),
+                inscription: None,
+            },
+            r"<h1>Sat 2099999997689999</h1>.*<a class=prev href=/sat/2099999997689998>prev</a>\nnext.*",
+        );
+    }
 
-  #[test]
-  fn sat_with_satpoint() {
-    assert_regex_match!(
-      SatHtml {
-        sat: Sat(0),
-        satpoint: Some(satpoint(1, 0)),
-        blocktime: Blocktime::confirmed(0),
-        inscription: None,
-      },
-      "<h1>Sat 0</h1>.*<dt>location</dt><dd class=monospace>1{64}:1:0</dd>.*",
-    );
-  }
+    #[test]
+    fn sat_with_satpoint() {
+        assert_regex_match!(
+            SatHtml {
+                sat: Sat(0),
+                satpoint: Some(satpoint(1, 0)),
+                blocktime: Blocktime::confirmed(0),
+                inscription: None,
+            },
+            "<h1>Sat 0</h1>.*<dt>location</dt><dd class=monospace>1{64}:1:0</dd>.*",
+        );
+    }
 }

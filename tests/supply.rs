@@ -1,14 +1,17 @@
-use {super::*, ord::subcommand::supply::Output};
+use {
+    super::*,
+    arb::subcommand::supply::Output,
+};
 
 #[test]
 fn genesis() {
-  assert_eq!(
-    CommandBuilder::new("supply").output::<Output>(),
-    Output {
-      supply: 2099999997690000,
-      first: 0,
-      last: 2099999997689999,
-      last_mined_in_block: 6929999
-    }
-  );
+    assert_eq!(
+        CommandBuilder::new("supply").output::<Output>(),
+        Output {
+            supply: 2099999997690000,
+            first: 0,
+            last: 2099999997689999,
+            last_mined_in_block: 6929999
+        }
+    );
 }

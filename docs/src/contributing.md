@@ -1,4 +1,4 @@
-Contributing to `ord`
+Contributing to `arb`
 =====================
 
 Suggested Steps

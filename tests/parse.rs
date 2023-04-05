@@ -1,32 +1,40 @@
-use {super::*, ord::subcommand::parse::Output, ord::Object};
+use {
+    super::*,
+    arb::{
+        subcommand::parse::Output,
+        Object,
+    },
+};
 
 #[test]
 fn name() {
-  assert_eq!(
-    CommandBuilder::new("parse a").output::<Output>(),
-    Output {
-      object: Object::Integer(2099999997689999),
-    }
-  );
+    assert_eq!(
+        CommandBuilder::new("parse a").output::<Output>(),
+        Output {
+            object: Object::Integer(2099999997689999),
+        }
+    );
 }
 
 #[test]
 fn hash() {
-  assert_eq!(
-    CommandBuilder::new("parse 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef")
-      .output::<Output>(),
-    Output {
-      object: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        .parse::<Object>()
-        .unwrap(),
-    }
-  );
+    assert_eq!(
+        CommandBuilder::new(
+            "parse 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+        )
+        .output::<Output>(),
+        Output {
+            object: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+                .parse::<Object>()
+                .unwrap(),
+        }
+    );
 }
 
 #[test]
 fn unrecognized_object() {
-  CommandBuilder::new("parse A")
-    .stderr_regex(r#"error: .*: unrecognized object\n.*"#)
-    .expected_exit_code(2)
-    .run();
+    CommandBuilder::new("parse A")
+        .stderr_regex(r#"error: .*: unrecognized object\n.*"#)
+        .expected_exit_code(2)
+        .run();
 }

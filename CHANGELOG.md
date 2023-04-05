@@ -1,4 +1,17 @@
-Changelog
+Arb Changelog
+=========
+
+[0.1.0](https://github.com/tyjvazum/arb/releases/tag/0.1.0) - 2023-04-05
+---------------------------------------------------------------------
+
+### Changed
+- Branding
+- License
+
+### Fixed
+- Workflows
+
+Ord Changelog
 =========
 
 [0.5.1](https://github.com/casey/ord/releases/tag/0.5.1) - 2023-02-21
@@ -643,7 +656,7 @@ Changelog
 - Add nix flake (#214)
 - Build binaries for releases (#213)
 
-[0.0.1](https://github.com/casey/ord/releases/tag/0.0.1) - 2022-06-05
+[0.0.1](https://github.com/casey/ord) - 2022-06-05
 ---------------------------------------------------------------------
 
 - Add commands to mint and verify NFTs (#211)

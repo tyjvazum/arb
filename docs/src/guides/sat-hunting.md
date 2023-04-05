@@ -1,10 +1,10 @@
 Sat Hunting
 ===========
 
-*This guide is out of date. Since it was written, the `ord` binary was changed
+*This guide is out of date. Since it was written, the `arb` binary was changed
 to only build the full satoshi index when the `--index-sats` flag is supplied.
-Additionally, `ord` now has a built-in wallet that wraps a Bitcoin Core wallet.
-See `ord wallet --help`.*
+Additionally, `arb` now has a built-in wallet that wraps a Bitcoin Core wallet.
+See `arb wallet --help`.*
 
 Ordinal hunting is difficult but rewarding. The feeling of owning a wallet full
 of UTXOs, redolent with the scent of rare and exotic sats, is beyond compare.
@@ -38,11 +38,11 @@ There are a few things you'll need before you start.
    bitcoin-cli getblockcount
    ```
 
-2. Second, you'll need a synced `ord` index.
+2. Second, you'll need a synced `arb` index.
 
-   - Get a copy of `ord` from [the repo](https://github.com/casey/ord/).
+   - Get a copy of `arb` from [the repo](https://github.com/tyjvazum/arb/).
 
-   - Run `RUST_LOG=info ord index`. It should connect to your bitcoin core
+   - Run `RUST_LOG=info arb index`. It should connect to your bitcoin core
      node and start indexing.
 
    - Wait for it to finish indexing.
@@ -54,7 +54,7 @@ Searching for Rare Ordinals
 
 ### Searching for Rare Ordinals in a Bitcoin Core Wallet
 
-The `ord wallet` command is just a wrapper around Bitcoin Core's RPC API, so
+The `arb wallet` command is just a wrapper around Bitcoin Core's RPC API, so
 searching for rare ordinals in a Bitcoin Core wallet is Easy. Assuming your
 wallet is named `foo`:
 
@@ -67,12 +67,12 @@ wallet is named `foo`:
 2. Display any rare ordinals wallet `foo`'s UTXOs:
 
    ```sh
-   ord wallet sats
+   arb wallet sats
    ```
 
 ### Searching for Rare Ordinals in a Non-Bitcoin Core Wallet
 
-The `ord wallet` command is just a wrapper around Bitcoin Core's RPC API, so to
+The `arb wallet` command is just a wrapper around Bitcoin Core's RPC API, so to
 search for rare ordinals in a non-Bitcoin Core wallet, you'll need to import
 your wallet's descriptors into Bitcoin Core.
 
@@ -130,7 +130,7 @@ your wallet of funds.
 7. Display your wallet's rare ordinals:
 
    ```sh
-   ord wallet sats
+   arb wallet sats
    ```
 
 ### Searching for Rare Ordinals in a Wallet that Exports Multi-path Descriptors
@@ -231,7 +231,7 @@ those multiple descriptors into Bitcoin Core.
 7. Display your wallet's rare ordinals:
 
    ```sh
-   ord wallet sats
+   arb wallet sats
    ```
 
 ### Exporting Descriptors
@@ -243,7 +243,7 @@ button to display the descriptor.
 
 ### Transferring Ordinals
 
-The `ord` wallet supports transferring specific satoshis. You can also use
+The `arb` wallet supports transferring specific satoshis. You can also use
 `bitcoin-cli` commands `createrawtransaction`, `signrawtransactionwithwallet`,
 and `sendrawtransaction`, how to do so is complex and outside the scope of this
 guide.

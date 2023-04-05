@@ -4,7 +4,7 @@ let
 in
   with nixpkgs;
   stdenv.mkDerivation {
-    name = "ord-shell";
+    name = "arb-shell";
     buildInputs = [
       just
       nixpkgs.latest.rustChannels.stable.rust

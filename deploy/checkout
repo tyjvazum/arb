@@ -6,11 +6,11 @@ BRANCH=$1
 CHAIN=$2
 DOMAIN=$3
 
-if [[ ! -d ord ]]; then
-  git clone https://github.com/casey/ord.git
+if [[ ! -d arb ]]; then
+  git clone https://github.com/tyjvazum/arb.git
 fi
 
-cd ord
+cd arb
 
 git fetch origin
 git checkout -B $BRANCH

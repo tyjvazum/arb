@@ -2,29 +2,33 @@ use super::*;
 
 #[derive(Boilerplate)]
 pub(crate) struct OutputHtml {
-  pub(crate) outpoint: OutPoint,
-  pub(crate) list: Option<List>,
-  pub(crate) chain: Chain,
-  pub(crate) output: TxOut,
-  pub(crate) inscriptions: Vec<InscriptionId>,
+    pub(crate) outpoint: OutPoint,
+    pub(crate) list: Option<List>,
+    pub(crate) chain: Chain,
+    pub(crate) output: TxOut,
+    pub(crate) inscriptions: Vec<InscriptionId>,
 }
 
 impl PageContent for OutputHtml {
-  fn title(&self) -> String {
-    format!("Output {}", self.outpoint)
-  }
+    fn title(&self) -> String {
+        format!("Output {}", self.outpoint)
+    }
 }
 
 #[cfg(test)]
 mod tests {
-  use {
-    super::*,
-    bitcoin::{blockdata::script, PubkeyHash, Script},
-  };
+    use {
+        super::*,
+        bitcoin::{
+            blockdata::script,
+            PubkeyHash,
+            Script,
+        },
+    };
 
-  #[test]
-  fn unspent_output() {
-    assert_regex_match!(
+    #[test]
+    fn unspent_output() {
+        assert_regex_match!(
       OutputHtml {
         inscriptions: Vec::new(),
         outpoint: outpoint(1),
@@ -51,22 +55,22 @@ mod tests {
       "
       .unindent()
     );
-  }
+    }
 
-  #[test]
-  fn spent_output() {
-    assert_regex_match!(
-      OutputHtml {
-        inscriptions: Vec::new(),
-        outpoint: outpoint(1),
-        list: Some(List::Spent),
-        chain: Chain::Mainnet,
-        output: TxOut {
-          value: 1,
-          script_pubkey: script::Builder::new().push_int(0).into_script(),
-        },
-      },
-      "
+    #[test]
+    fn spent_output() {
+        assert_regex_match!(
+            OutputHtml {
+                inscriptions: Vec::new(),
+                outpoint: outpoint(1),
+                list: Some(List::Spent),
+                chain: Chain::Mainnet,
+                output: TxOut {
+                    value: 1,
+                    script_pubkey: script::Builder::new().push_int(0).into_script(),
+                },
+            },
+            "
         <h1>Output <span class=monospace>1{64}:1</span></h1>
         <dl>
           <dt>value</dt><dd>1</dd>
@@ -75,13 +79,13 @@ mod tests {
         </dl>
         <p>Output has been spent.</p>
       "
-      .unindent()
-    );
-  }
+            .unindent()
+        );
+    }
 
-  #[test]
-  fn no_list() {
-    assert_regex_match!(
+    #[test]
+    fn no_list() {
+        assert_regex_match!(
       OutputHtml {
         inscriptions: Vec::new(),
         outpoint: outpoint(1),
@@ -104,22 +108,22 @@ mod tests {
       "
       .unindent()
     );
-  }
+    }
 
-  #[test]
-  fn with_inscriptions() {
-    assert_regex_match!(
-      OutputHtml {
-        inscriptions: vec![inscription_id(1)],
-        outpoint: outpoint(1),
-        list: None,
-        chain: Chain::Mainnet,
-        output: TxOut {
-          value: 3,
-          script_pubkey: Script::new_p2pkh(&PubkeyHash::all_zeros()),
-        },
-      },
-      "
+    #[test]
+    fn with_inscriptions() {
+        assert_regex_match!(
+            OutputHtml {
+                inscriptions: vec![inscription_id(1)],
+                outpoint: outpoint(1),
+                list: None,
+                chain: Chain::Mainnet,
+                output: TxOut {
+                    value: 3,
+                    script_pubkey: Script::new_p2pkh(&PubkeyHash::all_zeros()),
+                },
+            },
+            "
         <h1>Output <span class=monospace>1{64}:1</span></h1>
         <dl>
           <dt>inscriptions</dt>
@@ -129,7 +133,7 @@ mod tests {
           .*
         </dl>
       "
-      .unindent()
-    );
-  }
+            .unindent()
+        );
+    }
 }

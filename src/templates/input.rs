@@ -2,28 +2,31 @@ use super::*;
 
 #[derive(Boilerplate)]
 pub(crate) struct InputHtml {
-  pub(crate) path: (u64, usize, usize),
-  pub(crate) input: TxIn,
+    pub(crate) path: (u64, usize, usize),
+    pub(crate) input: TxIn,
 }
 
 impl PageContent for InputHtml {
-  fn title(&self) -> String {
-    format!("Input /{}/{}/{}", self.path.0, self.path.1, self.path.2)
-  }
+    fn title(&self) -> String {
+        format!("Input /{}/{}/{}", self.path.0, self.path.1, self.path.2)
+    }
 }
 
 #[cfg(test)]
 mod tests {
-  use {
-    super::*,
-    bitcoin::{blockdata::script, Witness},
-  };
+    use {
+        super::*,
+        bitcoin::{
+            blockdata::script,
+            Witness,
+        },
+    };
 
-  #[test]
-  fn input_html() {
-    let mut witness = Witness::new();
-    witness.push([1]);
-    pretty_assert_eq!(
+    #[test]
+    fn input_html() {
+        let mut witness = Witness::new();
+        witness.push([1]);
+        pretty_assert_eq!(
       InputHtml {
         path: (1, 2, 3),
         input: TxIn {
@@ -47,27 +50,27 @@ mod tests {
       "
       .unindent()
     );
-  }
+    }
 
-  #[test]
-  fn skip_empty_items() {
-    pretty_assert_eq!(
-      InputHtml {
-        path: (1, 2, 3),
-        input: TxIn {
-          previous_output: OutPoint::null(),
-          script_sig: script::Builder::new().into_script(),
-          sequence: Sequence::MAX,
-          witness: Witness::new(),
-        }
-      }
-      .to_string(),
-      "
+    #[test]
+    fn skip_empty_items() {
+        pretty_assert_eq!(
+            InputHtml {
+                path: (1, 2, 3),
+                input: TxIn {
+                    previous_output: OutPoint::null(),
+                    script_sig: script::Builder::new().into_script(),
+                    sequence: Sequence::MAX,
+                    witness: Witness::new(),
+                }
+            }
+            .to_string(),
+            "
       <h1>Input /1/2/3</h1>
       <dl>
       </dl>
       "
-      .unindent()
-    );
-  }
+            .unindent()
+        );
+    }
 }

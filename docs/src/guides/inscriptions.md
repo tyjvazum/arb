@@ -14,8 +14,8 @@ inscriptions to another wallet.
 Bitcoin Core provides both a Bitcoin full node and wallet. However, the Bitcoin
 Core wallet cannot create inscriptions and does not perform sat control.
 
-This requires [`ord`](https://github.com/casey/ord), the ordinal utility. `ord`
-doesn't implement its own wallet, so `ord wallet` subcommands interact with
+This requires an the ordinal-aware utility, like [`arb`](https://github.com/tyjvazum/arb). `arb`
+doesn't implement its own wallet, so `arb wallet` subcommands interact with
 Bitcoin Core wallets.
 
 This guide covers:
@@ -23,18 +23,18 @@ This guide covers:
 1. Installing Bitcoin Core
 2. Syncing the Bitcoin blockchain
 3. Creating a Bitcoin Core wallet
-4. Using `ord wallet receive` to receive sats
-5. Creating inscriptions with `ord wallet inscribe`
-6. Sending inscriptions with `ord wallet send`
-7. Receiving inscriptions with `ord wallet receive`
+4. Using `arb wallet receive` to receive sats
+5. Creating inscriptions with `arb wallet inscribe`
+6. Sending inscriptions with `arb wallet send`
+7. Receiving inscriptions with `arb wallet receive`
 
 Getting Help
 ------------
 
-If you get stuck, try asking for help on the [Ordinals Discord
-Server](https://discord.com/invite/87cjuz4FYg), or checking GitHub for relevant
-[issues](https://github.com/casey/ord/issues) and
-[discussions](https://github.com/casey/ord/discussions).
+If you get stuck, try asking for help in the
+[Arb Gitter room](https://app.gitter.im/#/room/#arb-proto:gitter.im), or checking the GitHub
+[issues](https://github.com/tyjvazum/arb/issues) and
+[discussions](https://github.com/tyjvazum/arb/discussions).
 
 Installing Bitcoin Core
 -----------------------
@@ -51,7 +51,7 @@ the command line.
 Configuring Bitcoin Core
 ------------------------
 
-`ord` requires Bitcoin Core's transaction index.
+`arb` requires Bitcoin Core's transaction index.
 
 To configure your Bitcoin Core node to maintain a transaction
 index, add the following to your `bitcoin.conf`:
@@ -82,40 +82,40 @@ bitcoin-cli getblockcount
 ```
 
 agrees with the block count on a block explorer like [the mempool.space block
-explorer](https://mempool.space/). `ord` interacts with `bitcoind`, so you
-should leave `bitcoind` running in the background when you're using `ord`.
+explorer](https://mempool.space/). `arb` interacts with `bitcoind`, so you
+should leave `bitcoind` running in the background when you're using `arb`.
 
-Installing `ord`
+Installing `arb`
 ----------------
 
-The `ord` utility is written in Rust and can be built from
-[source](https://github.com/casey/ord). Pre-built binaries are available on the
-[releases page](https://github.com/casey/ord/releases).
+The `arb` utility is written in Rust and can be built from
+[source](https://github.com/tyjvazum/arb). Pre-built binaries are available on the
+[releases page](https://github.com/tyjvazum/arb/releases).
 
 You can install the latest pre-built binary from the command line with:
 
 ```sh
-curl --proto '=https' --tlsv1.2 -fsLS https://ordinals.com/install.sh | bash -s
+curl --proto '=https' --tlsv1.2 -fsLS https://raw.githubusercontent.com/tyjvazum/arb/master/install.sh | bash -s
 ```
 
-Once `ord` is installed, you should be able to run:
+Once `arb` is installed, you should be able to run:
 
 ```
-ord --version
+arb --version
 ```
 
-Which prints out `ord`'s version number.
+Which prints out `arb`'s version number.
 
 Creating a Bitcoin Core Wallet
 ------------------------------
 
-`ord` uses Bitcoin Core to manage private keys, sign transactions, and
+`arb` uses Bitcoin Core to manage private keys, sign transactions, and
 broadcast transactions to the Bitcoin network.
 
-To create a Bitcoin Core wallet named `ord` for use with `ord`, run:
+To create a Bitcoin Core wallet named `arb` for use with `arb`, run:
 
 ```
-ord wallet create
+arb wallet create
 ```
 
 Receiving Sats
@@ -124,10 +124,10 @@ Receiving Sats
 Inscriptions are made on individual sats, using normal Bitcoin transactions
 that pay fees in sats, so your wallet will need some sats.
 
-Get a new address from your `ord` wallet by running:
+Get a new address from your `arb` wallet by running:
 
 ```
-ord wallet receive
+arb wallet receive
 ```
 
 And send it some funds.
@@ -135,17 +135,17 @@ And send it some funds.
 You can see pending transactions with:
 
 ```
-ord wallet transactions
+arb wallet transactions
 ```
 
 Once the transaction confirms, you should be able to see the transactions
-outputs with `ord wallet outputs`.
+outputs with `arb wallet outputs`.
 
 Creating Inscription Content
 ----------------------------
 
-Sats can be inscribed with any kind of content, but the `ord` wallet only
-supports content types that can be displayed by the `ord` block explorer.
+Sats can be inscribed with any kind of content, but the `arb` wallet only
+supports content types that can be displayed by the `arb` block explorer.
 
 Additionally, inscriptions are included in transactions, so the larger the
 content, the higher the fee that the inscription transaction must pay.
@@ -166,10 +166,10 @@ Creating Inscriptions
 To create an inscription with the contents of `FILE`, run:
 
 ```
-ord wallet inscribe --fee-rate FEE_RATE FILE
+arb wallet inscribe --fee-rate FEE_RATE FILE
 ```
 
-Ord will output two transactions IDs, one for the commit transaction, and one
+Arb will output two transactions IDs, one for the commit transaction, and one
 for the reveal transaction, and the inscription ID. Inscription IDs are of the
 form `TXIDiN`, where `TXID` is the transaction ID of the reveal transaction,
 and `N` is the index of the inscription in the reveal transaction.
@@ -187,11 +187,11 @@ Once the reveal transaction has been mined, the inscription ID should be
 printed when you run:
 
 ```
-ord wallet inscriptions
+arb wallet inscriptions
 ```
 
-And when you visit [the ordinals explorer](https://ordinals.com/) at
-`ordinals.com/inscription/INSCRIPTION_ID`.
+And when you visit a standards-compliant [ordinals explorer](https://ordinals.com/) at
+`/inscription/INSCRIPTION_ID`.
 
 Sending Inscriptions
 --------------------
@@ -199,26 +199,26 @@ Sending Inscriptions
 Ask the recipient to generate a new address by running:
 
 ```
-ord wallet receive
+arb wallet receive
 ```
 
 Send the inscription by running:
 
 ```
-ord wallet send --fee-rate <FEE_RATE> <ADDRESS> <INSCRIPTION_ID>
+arb wallet send --fee-rate <FEE_RATE> <ADDRESS> <INSCRIPTION_ID>
 ```
 
 See the pending transaction with:
 
 ```
-ord wallet transactions
+arb wallet transactions
 ```
 
 Once the send transaction confirms, the recipient can confirm receipt by
 running:
 
 ```
-ord wallet inscriptions
+arb wallet inscriptions
 ```
 
 Receiving Inscriptions
@@ -227,22 +227,22 @@ Receiving Inscriptions
 Generate a new receive address using:
 
 ```
-ord wallet receive
+arb wallet receive
 ```
 
 The sender can transfer the inscription to your address using:
 
 ```
-ord wallet send ADDRESS INSCRIPTION_ID
+arb wallet send ADDRESS INSCRIPTION_ID
 ```
 
 See the pending transaction with:
 ```
-ord wallet transactions
+arb wallet transactions
 ```
 
 Once the send transaction confirms, you can can confirm receipt by running:
 
 ```
-ord wallet inscriptions
+arb wallet inscriptions
 ```

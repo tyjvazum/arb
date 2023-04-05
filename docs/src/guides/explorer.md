@@ -1,8 +1,8 @@
 Ordinal Explorer
 ================
 
-The `ord` binary includes a block explorer. We host a instance of the block
-explorer on mainnet at [ordinals.com](https://ordinals.com), and on signet at
+The `arb` binary includes a block explorer. A public instance of the block
+explorer is hosted for mainnet at [ordinals.com](https://ordinals.com), and on signet at
 [signet.ordinals.com](https://signet.ordinals.com).
 
 Search

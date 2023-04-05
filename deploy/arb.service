@@ -1,6 +1,6 @@
 [Unit]
 After=network.target
-Description=Ord server
+Description=Arb server
 StartLimitBurst=120
 StartLimitIntervalSec=10m
 
@@ -8,17 +8,17 @@ StartLimitIntervalSec=10m
 AmbientCapabilities=CAP_NET_BIND_SERVICE
 Environment=RUST_BACKTRACE=1
 Environment=RUST_LOG=info
-ExecStart=/usr/local/bin/ord \
+ExecStart=/usr/local/bin/arb \
   --bitcoin-data-dir /var/lib/bitcoind \
-  --data-dir /var/lib/ord \
-  --config-dir /var/lib/ord \
+  --data-dir /var/lib/arb \
+  --config-dir /var/lib/arb \
   --chain ${CHAIN} \
   --index-sats \
   server \
   --acme-contact mailto:casey@rodarmor.com \
   --http \
   --https
-Group=ord
+Group=arb
 LimitNOFILE=65536
 MemoryDenyWriteExecute=true
 NoNewPrivileges=true
@@ -28,12 +28,12 @@ ProtectHome=true
 ProtectSystem=full
 Restart=on-failure
 RestartSec=5s
-StateDirectory=ord
+StateDirectory=arb
 StateDirectoryMode=0700
 TimeoutStopSec=10m
 Type=simple
-User=ord
-WorkingDirectory=/var/lib/ord
+User=arb
+WorkingDirectory=/var/lib/arb
 
 [Install]
 WantedBy=multi-user.target

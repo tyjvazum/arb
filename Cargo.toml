@@ -1,12 +1,12 @@
 [package]
-name = "ord"
-description = "◉ Ordinal wallet and block explorer"
-version = "0.5.1"
-license = "CC0-1.0"
+name = "arb"
+description = "◉ Arbitrary Protocols on top of Bitcoin (Bitcoin NFTs/Ordinals & Bitcoin Identities/Usernames)"
+version = "0.1.0"
+license = "GPL-3.0-only"
 edition = "2021"
 autotests = false
-homepage = "https://github.com/casey/ord"
-repository = "https://github.com/casey/ord"
+homepage = "https://github.com/tyjvazum/arb"
+repository = "https://github.com/tyjvazum/arb"
 autobins = false
 rust-version = "1.67"
 
@@ -65,11 +65,11 @@ test-bitcoincore-rpc = { path = "test-bitcoincore-rpc" }
 unindent = "0.2.1"
 
 [[bin]]
-name = "ord"
+name = "arb"
 path = "src/bin/main.rs"
 
 [lib]
-name = "ord"
+name = "arb"
 path = "src/lib.rs"
 
 [[test]]

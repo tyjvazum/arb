@@ -11,6 +11,8 @@ defaults:
 
 jobs:
   release:
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -36,28 +38,28 @@ jobs:
     runs-on: ${{matrix.os}}
 
     steps:
-    - uses: actions/checkout@v2
-
+    - uses: actions/checkout@v3
+    
     - name: Install Rust Toolchain Components
-      uses: actions-rs/toolchain@v1
-      with:
-        override: true
-        target: ${{ matrix.target }}
-        toolchain: stable
-
+      run: |
+        rustup override set stable
+        rustup update stable
+        rustup target add ${{ matrix.target }}
+        rustup default stable-${{ matrix.target }}
+        
     - name: Install Linux Dependencies
       if: ${{ matrix.os == 'ubuntu-latest' }}
       run: |
         sudo apt-get update
         sudo apt-get install musl-tools libssl-dev pkg-config
-
+        
     - name: Release Type
       id: release-type
       run: |
-        if [[ ${{ github.ref }} =~ ^refs/tags/[0-9]+[.][0-9]+[.][0-9]+$ ]]; then
-            echo ::set-output name=value::release
+        if [[ ${{ github.ref }} =~ ^refs/tags/v[0-9]+[.][0-9]+[.][0-9]+$ ]]; then
+            echo "value=release" >> $GITHUB_OUTPUT
         else
-            echo ::set-output name=value::prerelease
+            echo "value=prerelease" >> $GITHUB_OUTPUT
         fi
 
     - name: Package
@@ -71,7 +73,7 @@ jobs:
       shell: bash
 
     - name: Publish Archive
-      uses: softprops/action-gh-release@v0.1.15
+      uses: softprops/action-gh-release@v1
       if: ${{ startsWith(github.ref, 'refs/tags/') }}
       with:
         draft: false

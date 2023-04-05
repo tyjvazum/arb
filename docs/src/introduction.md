@@ -35,11 +35,8 @@ enabled by ordinal theory.
 Links
 -----
 
-- [GitHub](https://github.com/casey/ord/)
-- [BIP](https://github.com/casey/ord/blob/master/bip.mediawiki)
-- [Discord](https://discord.gg/ordinals)
-- [Mainnet Block Explorer](https://ordinals.com)
-- [Signet Block Explorer](https://signet.ordinals.com)
+- [GitHub](https://github.com/tyjvazum/arb/)
+- [BIP](https://github.com/tyjvazum/arb/blob/master/bip.mediawiki)
 
 Videos
 ------

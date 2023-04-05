@@ -1,77 +1,138 @@
-`ord`
+◉ `arb`
 =====
 
-`ord` is an index, block explorer, and command-line wallet. It is experimental
-software with no warranty. See [LICENSE](LICENSE) for more details.
+`arb` is a command-line wallet, index, and explorer interface that
+implements the `arb` protocol, which enables arbitrary protocols on top
+of Bitcoin, such as Bitcoin NFTs/Ordinals &amp; Bitcoin Identities/Usernames.
 
-Ordinal theory imbues satoshis with numismatic value, allowing them to
-be collected and traded as curios.
+It is experimental software, should be considered a work-in-progress, and has
+no warranty. All features may not be fully implemented currently. See issues
+and [LICENSE](LICENSE) for more details.
 
-Ordinal numbers are serial numbers for satoshis, assigned in the order in which
-they are mined, and preserved across transactions.
+Join [the Gitter room](https://app.gitter.im/#/room/#arb-proto:gitter.im) to
+chat about the `arb` ecosystem.
 
-See [the docs](https://docs.ordinals.com) for documentation and guides.
+Features
+------
 
-See [the BIP](bip.mediawiki) for a technical description of the assignment and
-transfer algorithm.
+- [ ] Arbitrary Protocols
 
-See [the project board](https://github.com/users/casey/projects/3/) for
-currently prioritized issues.
+- [ ] Content Compression
 
-See [milestones](https://github.com/casey/ord/milestones) to get a sense of
-where the project is and where it's going.
+- [ ] Data Deduplication
 
-Join [the Discord server](https://discord.gg/87cjuz4FYg) to chat with fellow
-ordinal degenerates.
+- [ ] Hash-addressed Content
 
-Tune in to the [Twitch stream](https://www.twitch.tv/ordinalsofficial) to watch us work on this project!
+- [ ] Inscription Constraints
+
+- [ ] Inscription Metadata (JSON)
+
+- [ ] Multipart Inscriptions
+
+- [ ] Non-tracked / Non-transferable Inscriptions
+
+- [ ] Off-chain Content (BitTorrent)
+
+Default Protocols
+------
+
+- [ ] 📁 `bfs`: Bitcoin File System, enabling storage and retrieval of public files using a
+  [filesystem](https://en.wikipedia.org/wiki/File_system) paradigm.
+
+- [ ] 🪪 `bid`: Bitcoin Identifiers/Usernames, enabling unique, human-meaningful
+  name registration natively on Bitcoin.
+
+- [ ] 💎 `ord`: Bitcoin NFTs/Ordinals, enabling NFTs natively on Bitcoin by imbuing
+  satoshis with numismatic value, allowing them to be collected and traded as
+  curios.
+
+- [ ] ✨ `wal`: Bitcoin NFT Walls, enabling a `bid` to showcase a curated
+  collection of NFTs that it owns.
+
+- [ ] ◉ `arb` supports arbitrary protocols on top of Bitcoin using inscriptions, so
+additional protocols can be defined using a JSON specification file, which are
+loaded to run the arbitrary protocol.
+
+`bfs` Protocol
+------
+
+- Is associated with a specific `bid` Identifier/Username.
+
+`bid` Protocol
+------
+
+- Characters can be alphanumeric with underscores, lowercase a through z,
+  0 through 9, and _ in any combination.
+
+- Length can be 1 through 16 characters, with 6 characters and shorter reserved
+  for a future update, so 7 to 16 characters to start with.
+
+- Usernames must be renewed periodically, likely every 52,500 blocks, which is
+  about 1 year, but perhaps a shorter period initially to discourage speculation
+  and encourage engagement.
+
+- A "sunrise period" where a list of the top ten thousand domains are reserved,
+  with the matching username claimable by publishing some specific data at a
+  well-known location on the domain prior to the end of the sunrise period,
+  which would be some specified block height.
+
+`ord` Protocol
+------
+
+- Version 0 (ordv0): As defined in https://github.com/casey/ord.
+  
+- Version 1 (ordv1): Extended with new features, implemented through a backward-compatible,
+  soft-fork mechanism termed Envelope Expansion.
+
+`wal` Protocol
+------
+
+- Is associated with a specific `bid` Identifier/Username.
+
+- Is addressable at `USERNAME/WALL` where `USERNAME` is a valid `bid` inscription and
+  `WALL` is the name for a `wal` inscription that the `bid` inscription is associated with.
+
+- Has a text description that can be whatever the owner chooses.
 
 Wallet
 ------
 
-`ord` relies on Bitcoin Core for private key management and transaction signing.
+`arb` relies on Bitcoin Core for key management and transaction signing.
 This has a number of implications that you must understand in order to use
-`ord` wallet commands safely:
+`arb` wallet commands safely:
 
 - Bitcoin Core is not aware of inscriptions and does not perform sat
-  control. Using `bitcoin-cli` commands and RPC calls with `ord` wallets may
+  control. Using `bitcoin-cli` commands and RPC calls with `arb` wallets may
   lead to loss of inscriptions.
 
-- `ord wallet` commands automatically load the `ord` wallet given by the
-  `--wallet` option, which defaults to 'ord'. Keep in mind that after running
-  an `ord wallet` command, an `ord` wallet may be loaded.
+- `arb wallet` commands automatically load the `arb` wallet given by the
+  `--wallet` option, which defaults to 'arb'. Keep in mind that after running
+  an `arb wallet` command, an `arb` wallet may be loaded.
 
-- Because `ord` has access to your Bitcoin Core wallets, `ord` should not be
+- Because `arb` has access to your Bitcoin Core wallets, `arb` should not be
   used with wallets that contain a material amount of funds. Keep ordinal and
   cardinal wallets segregated.
-
-### Pre-alpha wallet migration
-
-Alpha `ord` wallets are not compatible with wallets created by previous
-versions of `ord`. To migrate, use `ord wallet send` from the old wallet to
-send sats and inscriptions to addresses generated by the new wallet with `ord
-wallet receive`.
 
 Installation
 ------------
 
-`ord` is written in Rust and can be built from
-[source](https://github.com/casey/ord). Pre-built binaries are available on the
-[releases page](https://github.com/casey/ord/releases).
+`arb` is written in Rust and can be built from
+[source](https://github.com/tyjvazum/arb). Pre-built binaries are available on the
+[releases page](https://github.com/tyjvazum/arb/releases).
 
 You can install the latest pre-built binary from the command line with:
 
 ```sh
-curl --proto '=https' --tlsv1.2 -fsLS https://ordinals.com/install.sh | bash -s
+curl --proto '=https' --tlsv1.2 -fsLS https://raw.githubusercontent.com/tyjvazum/arb/master/install.sh | bash -s
 ```
 
-Once `ord` is installed, you should be able to run `ord --version` on the
+Once `arb` is installed, you should be able to run `arb --version` on the
 command line.
 
 Building
 --------
 
-On Debian and Ubuntu, `ord` requires `libssl-dev` when building from source:
+On Debian and Ubuntu, `arb` requires `libssl-dev` when building from source:
 
 ```
 sudo apt-get install libssl-dev
@@ -83,43 +144,55 @@ You'll also need Rust:
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
-To build `ord` from source:
+To build `arb` from source:
 
 ```
-git clone https://github.com/casey/ord.git
-cd ord
+git clone https://github.com/tyjvazum/arb.git
+cd arb
 cargo build --release
 ```
 
-The default location for the `ord` binary once built is `./target/release/ord`.
+The default location for the `arb` binary once built is `./target/release/arb`.
 
-`ord` requires `rustc` version 1.67.0 or later. Run `rustc --version` to ensure you have this version. Run `rustup update` to get the latest stable release.
-
+`arb` requires `rustc` version 1.67.0 or later. Run `rustc --version` to ensure you have this 
+version. Run `rustup update` to get the latest stable release.
 
 Syncing
 -------
 
-`ord` requires a synced `bitcoind` node with `-txindex` to build the index of
-satoshi locations. `ord` communicates with `bitcoind` via RPC.
+`arb` requires a synced `bitcoind` node with `-txindex` to build the index of
+satoshi locations. `arb` communicates with `bitcoind` via RPC.
 
 If `bitcoind` is run locally by the same user, without additional
-configuration, `ord` should find it automatically by reading the `.cookie` file
+configuration, `arb` should find it automatically by reading the `.cookie` file
 from `bitcoind`'s datadir, and connecting using the default RPC port.
 
 If `bitcoind` is not on mainnet, is not run by the same user, has a non-default
-datadir, or a non-default port, you'll need to pass additional flags to `ord`.
-See `ord --help` for details.
+datadir, or a non-default port, you'll need to pass additional flags to `arb`.
+See `arb --help` for details.
 
 Logging
 --------
 
-`ord` uses [env_logger](https://docs.rs/env_logger/latest/env_logger/). Set the
+`arb` uses [env_logger](https://docs.rs/env_logger/latest/env_logger/). Set the
 `RUST_LOG` environment variable in order to turn on logging. For example, run
 the server and show `info`-level log messages and above:
 
 ```
 $ RUST_LOG=info cargo run server
 ```
+
+Logo
+------
+
+The `arb` logo is ◉, which is the Unicode "Fisheye" character with Unicode
+codepoint `U+25C9`. Other representations include HTML (decimal) `&#9673;`, HTML (hex) `&#x25C9`,
+CSS-code `\0025C9`, and JavaScript code `\u25C9`. It should ideally be displayed using the font
+color `#F7931A`, but when that isn't possible (e.g., on social media posts), using the default
+character in a black or white font color is acceptable as a fallback logo.
+
+A PNG version of the logo (`logo-1000x1000.png`), in font color `#F7931A`, has also been included
+for use where needed.
 
 New Releases
 ------------
@@ -134,3 +207,8 @@ Release x.y.z
 - Update dependencies
 - Update database schema version
 ```
+
+Acknowledgements
+------------
+
+This repository is based on the great work done in `ord`: https://github.com/casey/ord
