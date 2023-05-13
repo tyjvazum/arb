@@ -12,7 +12,7 @@ fn cardinals() {
     create_wallet(&rpc_server);
 
     // this creates 2 more cardinal outputs and one inscribed output
-    inscribe(&rpc_server);
+    inscribe(&rpc_server, "foo.txt", false, None);
 
     let all_outputs = CommandBuilder::new("wallet outputs")
         .rpc_server(&rpc_server)

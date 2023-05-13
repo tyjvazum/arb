@@ -9,7 +9,7 @@ fn inscribe_creates_inscriptions() {
 
     create_wallet(&rpc_server);
 
-    let Inscribe { inscription, .. } = inscribe(&rpc_server);
+    let Inscribe { inscription, .. } = inscribe(&rpc_server, "foo.txt", false, None);
 
     assert_eq!(rpc_server.descriptors().len(), 3);
 
@@ -95,7 +95,7 @@ fn inscribe_exceeds_chain_limit() {
         .rpc_server(&rpc_server)
         .expected_exit_code(1)
         .expected_stderr(
-            "error: content size of 1025 bytes exceeds 1024 byte limit for signet inscriptions\n",
+            "error: Content size of 1025 bytes exceeds 1024 byte limit for signet inscriptions!\n",
         )
         .run();
 }
@@ -154,7 +154,7 @@ fn refuse_to_reinscribe_sats() {
 
     rpc_server.mine_blocks(1);
 
-    let Inscribe { reveal, .. } = inscribe(&rpc_server);
+    let Inscribe { reveal, .. } = inscribe(&rpc_server, "foo.txt", false, None);
 
     rpc_server.mine_blocks_with_subsidy(1, 100);
 
@@ -177,7 +177,7 @@ fn refuse_to_inscribe_already_inscribed_utxo() {
         reveal,
         inscription,
         ..
-    } = inscribe(&rpc_server);
+    } = inscribe(&rpc_server, "foo.txt", false, None);
 
     let output = OutPoint {
         txid: reveal,

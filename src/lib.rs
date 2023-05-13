@@ -191,6 +191,7 @@ mod inscription;
 mod inscription_id;
 mod media;
 mod object;
+mod off_chain;
 mod options;
 mod outgoing;
 mod page_config;

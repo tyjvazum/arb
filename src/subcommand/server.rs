@@ -43,6 +43,7 @@ use {
         http::{
             header,
             HeaderMap,
+            HeaderName,
             HeaderValue,
             StatusCode,
             Uri,
@@ -800,7 +801,25 @@ impl Server {
             HeaderValue::from_static("max-age=31536000, immutable"),
         );
 
-        Some((headers, inscription.into_body()?))
+        // Custom header as a work around, required due to tight-coupling with HTTP,
+        // to easily return metadata.
+        let (body, metadata, props) = inscription.into_body_metadata_and_props();
+
+        if let Some(value) = metadata {
+            headers.insert(
+                HeaderName::from_static("inscription-metadata"),
+                HeaderValue::from_str(str::from_utf8(&value).unwrap()).unwrap(),
+            );
+        }
+
+        if let Some(p) = props {
+            headers.insert(
+                HeaderName::from_static("protocol-properties"),
+                HeaderValue::from_str(&p).unwrap(),
+            );
+        }
+
+        Some((headers, body?))
     }
 
     async fn preview(
@@ -2076,7 +2095,6 @@ mod tests {
     fn content_response_no_content_type() {
         let (headers, body) =
             Server::content_response(Inscription::new(None, Some(Vec::new()))).unwrap();
-
         assert_eq!(headers["content-type"], "application/octet-stream");
         assert!(body.is_empty());
     }

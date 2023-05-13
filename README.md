@@ -16,8 +16,10 @@ Features
 ------
 
 - [ ] Arbitrary Protocols https://github.com/tyjvazum/arb/issues/1
+  - [ ] Read Arbitrary Protocol Inscriptions
+  - [x] Write Arbitrary Protocol Inscriptions
 
-- [ ] Content Compression https://github.com/tyjvazum/arb/issues/2
+- [x] Content Compression https://github.com/tyjvazum/arb/issues/2
 
 - [ ] Data Deduplication https://github.com/tyjvazum/arb/issues/3
 
@@ -25,13 +27,13 @@ Features
 
 - [ ] Inscription Constraints https://github.com/tyjvazum/arb/issues/5
 
-- [ ] Inscription Metadata (JSON) https://github.com/tyjvazum/arb/issues/6
+- [x] Inscription Metadata (JSON) https://github.com/tyjvazum/arb/issues/6
 
 - [ ] Multipart Inscriptions https://github.com/tyjvazum/arb/issues/7
 
-- [ ] Non-tracked / Non-transferable Inscriptions https://github.com/tyjvazum/arb/issues/8
+- [x] Non-tracked / Non-transferable Inscriptions https://github.com/tyjvazum/arb/issues/8
 
-- [ ] Off-chain Content (BitTorrent) https://github.com/tyjvazum/arb/issues/9
+- [x] Off-chain Content (BitTorrent) https://github.com/tyjvazum/arb/issues/9
 
 Default Protocols
 ------
@@ -42,14 +44,14 @@ Default Protocols
 - [ ] 🪪 `bid`: Bitcoin Identifiers/Usernames, enabling unique, human-meaningful
   name registration natively on Bitcoin.
 
+- [ ] ✨ `bnw`: Bitcoin NFT Walls, enabling a `bid` to showcase a curated
+  collection of NFTs that it owns.
+
 - [ ] 💎 `ord`: Bitcoin NFTs/Ordinals, enabling NFTs natively on Bitcoin by imbuing
   satoshis with numismatic value, allowing them to be collected and traded as
   curios.
 
-- [ ] ✨ `wal`: Bitcoin NFT Walls, enabling a `bid` to showcase a curated
-  collection of NFTs that it owns.
-
-- [ ] ◉ `arb` supports arbitrary protocols on top of Bitcoin using inscriptions, so
+- [x] ◉ `arb` supports arbitrary protocols on top of Bitcoin using inscriptions, so
 additional protocols can be defined using a JSON specification file, which are
 loaded to run the arbitrary protocol.
 
@@ -76,15 +78,7 @@ loaded to run the arbitrary protocol.
   well-known location on the domain prior to the end of the sunrise period,
   which would be some specified block height.
 
-`ord` Protocol
-------
-
-- Version 0 (ordv0): As defined in https://github.com/casey/ord.
-  
-- Version 1 (ordv1): Extended with new features, implemented through a backward-compatible,
-  soft-fork mechanism termed Envelope Expansion.
-
-`wal` Protocol
+`bnw` Protocol
 ------
 
 - Is associated with a specific `bid` Identifier/Username.
@@ -93,6 +87,19 @@ loaded to run the arbitrary protocol.
   `WALL` is the name for a `wal` inscription that the `bid` inscription is associated with.
 
 - Has a text description that can be whatever the owner chooses.
+
+`ord` Protocol
+------
+
+- Version 0 (ordv0): As defined in https://github.com/casey/ord.
+  
+- Version 1 (ordv1): Extended with new features, implemented through a backward-compatible,
+  soft-fork mechanism termed Envelope Expansion.
+    - Content Compression
+    - Inscription Metadata (JSON)
+    - Off-chain Content (BitTorrent)
+    - Optional Title, Subtitle, Description, License, and Comment Fields
+    - Upgradable Version Mechanism
 
 Wallet
 ------

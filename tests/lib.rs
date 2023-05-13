@@ -1,4 +1,4 @@
-#![allow(clippy::type_complexity)]
+#![allow(clippy::type_complexity, clippy::manual_map)]
 
 use {
     self::{
@@ -14,6 +14,10 @@ use {
         Txid,
     },
     executable_path::executable_path,
+    include_dir::{
+        include_dir,
+        Dir,
+    },
     pretty_assertions::assert_eq as pretty_assert_eq,
     regex::Regex,
     reqwest::{
@@ -67,13 +71,71 @@ struct Inscribe {
     fees: u64,
 }
 
-fn inscribe(rpc_server: &test_bitcoincore_rpc::Handle) -> Inscribe {
+static INSCRIPTION_DIR: Dir<'_> = include_dir!("tests/inscriptions");
+
+fn inscribe(
+    rpc_server: &test_bitcoincore_rpc::Handle,
+    filename: &str,
+    compression: bool,
+    metadata_filename: Option<&str>,
+) -> Inscribe {
     rpc_server.mine_blocks(1);
 
-    let output = CommandBuilder::new("wallet inscribe --fee-rate 1 foo.txt")
-        .write("foo.txt", "FOO")
-        .rpc_server(rpc_server)
-        .output();
+    let content = INSCRIPTION_DIR
+        .get_file(filename)
+        .unwrap()
+        .contents_utf8()
+        .unwrap()
+        .replace('\n', "");
+
+    let metadata: Option<String> = if let Some(value) = metadata_filename {
+        Some(
+            INSCRIPTION_DIR
+                .get_file(value)
+                .unwrap()
+                .contents_utf8()
+                .unwrap()
+                .replace('\n', ""),
+        )
+    } else {
+        None
+    };
+
+    let command = if compression {
+        if metadata_filename.is_some() {
+            format!(
+                "wallet inscribe --protocol-id ord-v1 --metadata-file {metadata} --fee-rate 1 --compression {file}",
+                metadata = metadata_filename.unwrap(),
+                file = filename
+            )
+        } else {
+            format!(
+                "wallet inscribe --protocol-id ord-v1 --fee-rate 1 --compression {}",
+                filename
+            )
+        }
+    } else if metadata_filename.is_some() {
+        format!(
+            "wallet inscribe --protocol-id ord-v1 --metadata-file {metadata} --fee-rate 1 --compression {file}",
+            metadata = metadata_filename.unwrap(),
+            file = filename
+        )
+    } else {
+        format!("wallet inscribe --fee-rate 1 {}", filename)
+    };
+
+    let output = if let Some(value) = metadata {
+        CommandBuilder::new(command)
+            .write(filename, content)
+            .write(metadata_filename.unwrap(), value.as_str())
+            .rpc_server(rpc_server)
+            .output()
+    } else {
+        CommandBuilder::new(command)
+            .write(filename, content)
+            .rpc_server(rpc_server)
+            .output()
+    };
 
     rpc_server.mine_blocks(1);
 

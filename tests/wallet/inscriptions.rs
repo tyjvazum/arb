@@ -16,7 +16,7 @@ fn inscriptions() {
         reveal,
         inscription,
         ..
-    } = inscribe(&rpc_server);
+    } = inscribe(&rpc_server, "foo.txt", false, None);
 
     let output = CommandBuilder::new("wallet inscriptions")
         .rpc_server(&rpc_server)
@@ -65,7 +65,7 @@ fn inscriptions_includes_locked_utxos() {
         inscription,
         reveal,
         ..
-    } = inscribe(&rpc_server);
+    } = inscribe(&rpc_server, "foo.txt", false, None);
 
     rpc_server.mine_blocks(1);
 

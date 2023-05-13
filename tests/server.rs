@@ -1,4 +1,10 @@
-use super::*;
+use {
+    super::*,
+    include_dir::{
+        include_dir,
+        Dir,
+    },
+};
 
 #[test]
 fn run() {
@@ -44,7 +50,7 @@ fn inscription_page() {
         inscription,
         reveal,
         ..
-    } = inscribe(&rpc_server);
+    } = inscribe(&rpc_server, "foo.txt", false, None);
 
     TestServer::spawn_with_args(&rpc_server, &[]).assert_response_regex(
         format!("/inscription/{inscription}"),
@@ -93,7 +99,7 @@ fn inscription_appears_on_reveal_transaction_page() {
     let rpc_server = test_bitcoincore_rpc::spawn();
     create_wallet(&rpc_server);
 
-    let Inscribe { reveal, .. } = inscribe(&rpc_server);
+    let Inscribe { reveal, .. } = inscribe(&rpc_server, "foo.txt", false, None);
 
     rpc_server.mine_blocks(1);
 
@@ -112,7 +118,7 @@ fn inscription_appears_on_output_page() {
         reveal,
         inscription,
         ..
-    } = inscribe(&rpc_server);
+    } = inscribe(&rpc_server, "foo.txt", false, None);
 
     rpc_server.mine_blocks(1);
 
@@ -131,7 +137,7 @@ fn inscription_page_after_send() {
         reveal,
         inscription,
         ..
-    } = inscribe(&rpc_server);
+    } = inscribe(&rpc_server, "foo.txt", false, None);
 
     rpc_server.mine_blocks(1);
 
@@ -170,7 +176,7 @@ fn inscription_content() {
 
     rpc_server.mine_blocks(1);
 
-    let Inscribe { inscription, .. } = inscribe(&rpc_server);
+    let Inscribe { inscription, .. } = inscribe(&rpc_server, "foo.txt", false, None);
 
     rpc_server.mine_blocks(1);
 
@@ -190,11 +196,196 @@ fn inscription_content() {
 }
 
 #[test]
+fn inscription_with_compression() {
+    static INSCRIPTION_DIR: Dir<'_> = include_dir!("tests/inscriptions");
+
+    let content = INSCRIPTION_DIR
+        .get_file("alice29.txt")
+        .unwrap()
+        .contents_utf8()
+        .unwrap()
+        .replace('\n', "");
+
+    let rpc_server = test_bitcoincore_rpc::spawn();
+    create_wallet(&rpc_server);
+
+    rpc_server.mine_blocks(1);
+
+    let Inscribe { inscription, .. } = inscribe(&rpc_server, "alice29.txt", true, None);
+
+    rpc_server.mine_blocks(1);
+
+    let response =
+        TestServer::spawn_with_args(&rpc_server, &[]).request(format!("/content/{inscription}"));
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    assert_eq!(
+        response.headers().get("content-type").unwrap(),
+        "application/json"
+    );
+
+    assert_eq!(
+        response.headers().get("content-security-policy").unwrap(),
+        "default-src 'unsafe-eval' 'unsafe-inline' data:"
+    );
+
+    assert_eq!(response.bytes().unwrap(), content.as_str());
+}
+
+#[test]
+fn inscription_with_metadata_gets_compressed() {
+    static INSCRIPTION_DIR: Dir<'_> = include_dir!("tests/inscriptions");
+
+    let metadata = INSCRIPTION_DIR
+        .get_file("metadata.json")
+        .unwrap()
+        .contents_utf8()
+        .unwrap()
+        .replace('\n', "");
+
+    let rpc_server = test_bitcoincore_rpc::spawn();
+    create_wallet(&rpc_server);
+
+    rpc_server.mine_blocks(1);
+
+    let Inscribe { inscription, .. } =
+        inscribe(&rpc_server, "alice29.txt", false, Some("metadata.json"));
+
+    rpc_server.mine_blocks(1);
+
+    let response =
+        TestServer::spawn_with_args(&rpc_server, &[]).request(format!("/content/{inscription}"));
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    assert_eq!(
+        response.headers().get("content-type").unwrap(),
+        "application/json"
+    );
+
+    assert_eq!(
+        response.headers().get("content-security-policy").unwrap(),
+        "default-src 'unsafe-eval' 'unsafe-inline' data:"
+    );
+
+    let md = if response.headers().get("inscription-metadata").is_some() {
+        Some(response.headers().get("inscription-metadata").unwrap())
+    } else {
+        None
+    };
+
+    let parsed_md: serde_json::Value = serde_json::from_str(
+        str::from_utf8(&base64::decode(md.unwrap().to_str().unwrap()).unwrap()).unwrap(),
+    )
+    .expect("Unable to parse metadata!");
+
+    let parsed_metadata: serde_json::Value =
+        serde_json::from_str(&metadata).expect("Unable to parse metadata!");
+
+    assert_eq!(parsed_md, parsed_metadata);
+}
+
+#[test]
+fn inscription_with_protocol_options_gets_compressed() {
+    let rpc_server = test_bitcoincore_rpc::spawn();
+    create_wallet(&rpc_server);
+
+    rpc_server.mine_blocks(1);
+
+    let Inscribe { inscription, .. } = inscribe(&rpc_server, "alice29.txt", true, None);
+
+    rpc_server.mine_blocks(1);
+
+    let response =
+        TestServer::spawn_with_args(&rpc_server, &[]).request(format!("/content/{inscription}"));
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    assert_eq!(
+        response.headers().get("content-type").unwrap(),
+        "application/json"
+    );
+
+    assert_eq!(
+        response.headers().get("content-security-policy").unwrap(),
+        "default-src 'unsafe-eval' 'unsafe-inline' data:"
+    );
+
+    assert_eq!(
+        response.headers().get("protocol-properties").unwrap(),
+        "{\"comment\":\"This inscription is compressed using the ordv1 protocol. If you see this message, you're likely using an outdated ordv0-only client or explorer. Consider upgrading to the software referenced in this message, asking your current software provider to add support for ordv1, or switching to other software compatible with ordv1.\",\"description\":\"https://github.com/tyjvazum/arb\",\"license\":\"\",\"protocol\":\"ord\",\"software\":\"\",\"subtitle\":\"\",\"title\":\"\",\"tracking\":true,\"version\":\"1.0.0\"}"
+    );
+}
+
+#[test]
+fn inscription_with_compression_and_metadata() {
+    static INSCRIPTION_DIR: Dir<'_> = include_dir!("tests/inscriptions");
+
+    let content = INSCRIPTION_DIR
+        .get_file("alice29.txt")
+        .unwrap()
+        .contents_utf8()
+        .unwrap()
+        .replace('\n', "");
+
+    let metadata = INSCRIPTION_DIR
+        .get_file("metadata.json")
+        .unwrap()
+        .contents_utf8()
+        .unwrap()
+        .replace('\n', "");
+
+    let rpc_server = test_bitcoincore_rpc::spawn();
+    create_wallet(&rpc_server);
+
+    rpc_server.mine_blocks(1);
+
+    let Inscribe { inscription, .. } =
+        inscribe(&rpc_server, "alice29.txt", true, Some("metadata.json"));
+
+    rpc_server.mine_blocks(1);
+
+    let response =
+        TestServer::spawn_with_args(&rpc_server, &[]).request(format!("/content/{inscription}"));
+
+    assert_eq!(response.status(), StatusCode::OK);
+
+    assert_eq!(
+        response.headers().get("content-type").unwrap(),
+        "application/json"
+    );
+
+    assert_eq!(
+        response.headers().get("content-security-policy").unwrap(),
+        "default-src 'unsafe-eval' 'unsafe-inline' data:"
+    );
+
+    let md = if response.headers().get("inscription-metadata").is_some() {
+        Some(response.headers().get("inscription-metadata").unwrap())
+    } else {
+        None
+    };
+
+    let parsed_md: serde_json::Value = serde_json::from_str(
+        str::from_utf8(&base64::decode(md.unwrap().to_str().unwrap()).unwrap()).unwrap(),
+    )
+    .expect("Unable to parse metadata!");
+
+    let parsed_metadata: serde_json::Value =
+        serde_json::from_str(&metadata).expect("Unable to parse metadata!");
+
+    assert_eq!(response.text().unwrap(), content);
+
+    assert_eq!(parsed_md, parsed_metadata);
+}
+
+#[test]
 fn home_page_includes_latest_inscriptions() {
     let rpc_server = test_bitcoincore_rpc::spawn();
     create_wallet(&rpc_server);
 
-    let Inscribe { inscription, .. } = inscribe(&rpc_server);
+    let Inscribe { inscription, .. } = inscribe(&rpc_server, "foo.txt", false, None);
 
     TestServer::spawn_with_args(&rpc_server, &[]).assert_response_regex(
         "/",
@@ -215,7 +406,7 @@ fn home_page_inscriptions_are_sorted() {
     let mut inscriptions = String::new();
 
     for _ in 0..8 {
-        let Inscribe { inscription, .. } = inscribe(&rpc_server);
+        let Inscribe { inscription, .. } = inscribe(&rpc_server, "foo.txt", false, None);
         inscriptions.insert_str(
             0,
             &format!("\n  <a href=/inscription/{inscription}><iframe .*></a>"),
@@ -237,7 +428,7 @@ fn inscriptions_page() {
     let rpc_server = test_bitcoincore_rpc::spawn();
     create_wallet(&rpc_server);
 
-    let Inscribe { inscription, .. } = inscribe(&rpc_server);
+    let Inscribe { inscription, .. } = inscribe(&rpc_server, "foo.txt", false, None);
 
     TestServer::spawn_with_args(&rpc_server, &[]).assert_response_regex(
         "/inscriptions",
@@ -259,7 +450,7 @@ fn inscriptions_page_is_sorted() {
     let mut inscriptions = String::new();
 
     for _ in 0..8 {
-        let Inscribe { inscription, .. } = inscribe(&rpc_server);
+        let Inscribe { inscription, .. } = inscribe(&rpc_server, "foo.txt", false, None);
         inscriptions.insert_str(0, &format!(".*<a href=/inscription/{inscription}>.*"));
     }
 
@@ -272,9 +463,9 @@ fn inscriptions_page_has_next_and_previous() {
     let rpc_server = test_bitcoincore_rpc::spawn();
     create_wallet(&rpc_server);
 
-    let Inscribe { inscription: a, .. } = inscribe(&rpc_server);
-    let Inscribe { inscription: b, .. } = inscribe(&rpc_server);
-    let Inscribe { inscription: c, .. } = inscribe(&rpc_server);
+    let Inscribe { inscription: a, .. } = inscribe(&rpc_server, "foo.txt", false, None);
+    let Inscribe { inscription: b, .. } = inscribe(&rpc_server, "foo.txt", false, None);
+    let Inscribe { inscription: c, .. } = inscribe(&rpc_server, "foo.txt", false, None);
 
     TestServer::spawn_with_args(&rpc_server, &[]).assert_response_regex(
         format!("/inscription/{b}"),

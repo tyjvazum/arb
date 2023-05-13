@@ -64,22 +64,81 @@ pub(crate) struct Inscribe {
     pub(crate) fee_rate: FeeRate,
     #[clap(
         long,
-        help = "Use <COMMIT_FEE_RATE> sats/vbyte for commit transaction.\nDefaults to <FEE_RATE> if unset."
+        help = "Use <COMMIT_FEE_RATE> sats/vbyte for commit transaction.\nDefaults to <FEE_RATE> if \
+    unset."
     )]
     pub(crate) commit_fee_rate: Option<FeeRate>,
     #[clap(help = "Inscribe sat with contents of <FILE>")]
     pub(crate) file: PathBuf,
+    #[clap(long, help = "A title for the inscription.")]
+    pub(crate) title: Option<String>,
+    #[clap(long, help = "A subtitle for the inscription.")]
+    pub(crate) subtitle: Option<String>,
     #[clap(long, help = "Do not back up recovery key.")]
     pub(crate) no_backup: bool,
     #[clap(
         long,
-        help = "Do not check that transactions are equal to or below the MAX_STANDARD_TX_WEIGHT of 400,000 weight units. Transactions over this limit are currently nonstandard and will not be relayed by bitcoind in its default configuration. Do not use this flag unless you understand the implications."
+        help = "Do not check that transactions are equal to or below the MAX_STANDARD_TX_WEIGHT of \
+    400,000 weight units. Transactions over this limit are currently nonstandard and will not be \
+    relayed by bitcoind in its default configuration. Do not use this flag unless you understand \
+    the implications."
     )]
     pub(crate) no_limit: bool,
     #[clap(long, help = "Don't sign or broadcast transactions.")]
     pub(crate) dry_run: bool,
     #[clap(long, help = "Send inscription to <DESTINATION>.")]
     pub(crate) destination: Option<Address>,
+    #[clap(
+        long,
+        help = "Enable compression, which will reduce inscription size and transaction fees. \
+    Compression will only take place if it reduces file size. If compressed, the inscription \
+    content won't fully display on outdated explorers."
+    )]
+    pub(crate) compression: bool,
+    #[clap(
+        long,
+        help = "Create a torrent for <FILE> and inscribe its infohash/magnet. You must use a torrent \
+    client to seed the off-chain file in addition to making the inscription. As an off-chain \
+    inscription, the file content will not be stored in the Bitcoin blockchain."
+    )]
+    pub(crate) off_chain: bool,
+    #[clap(
+        long,
+        help = "Path to save .torrent file to. Defaults to <FILE>.torrent."
+    )]
+    pub(crate) torrent_path: Option<PathBuf>,
+    #[clap(
+        long,
+        help = "Torrent tracker URL to include in .torrent file.",
+        default_value = off_chain::DEFAULT_TRACKER,
+    )]
+    pub(crate) torrent_tracker: String,
+    #[clap(
+        long,
+        help = "Torrent peers to include in .torrent file (space-separated <host>:<port>).",
+        default_value = off_chain::DEFAULT_PEER,
+    )]
+    pub(crate) torrent_peers: String,
+    #[clap(
+        long,
+        help = "Inscribe sat with the contents of <FILE>.json as metadata."
+    )]
+    pub(crate) metadata_file: Option<PathBuf>,
+    #[clap(
+        long,
+        help = "Use <FILE>.json as source for properties specific to the protocol being used."
+    )]
+    pub(crate) properties_file: Option<PathBuf>,
+    #[clap(long, help = "A license for the inscription content.")]
+    pub(crate) license: Option<String>,
+    #[clap(
+        long,
+        help = "The protocol_id of the protocol to use for the inscription. Defaults to 'ord-v0'.",
+        default_value = "ord-v0"
+    )]
+    pub(crate) protocol_id: String,
+    #[clap(long, help = "A description for the inscription content.")]
+    pub(crate) description: Option<String>,
 }
 
 impl Inscribe {
@@ -87,7 +146,22 @@ impl Inscribe {
         self,
         options: Options,
     ) -> Result {
-        let inscription = Inscription::from_file(options.chain(), &self.file)?;
+        let inscription = Inscription::from_file(
+            options.chain(),
+            &self.file,
+            self.title,
+            self.subtitle,
+            self.compression,
+            self.off_chain,
+            self.torrent_path,
+            &self.torrent_tracker,
+            &self.torrent_peers,
+            self.metadata_file,
+            self.properties_file,
+            self.license,
+            self.protocol_id,
+            self.description,
+        )?;
 
         let index = Index::open(&options)?;
         index.update()?;
@@ -335,8 +409,9 @@ impl Inscribe {
 
         if !no_limit && reveal_weight > MAX_STANDARD_TX_WEIGHT.try_into().unwrap() {
             bail!(
-        "reveal transaction weight greater than {MAX_STANDARD_TX_WEIGHT} (MAX_STANDARD_TX_WEIGHT): {reveal_weight}"
-      );
+                "reveal transaction weight greater than {MAX_STANDARD_TX_WEIGHT} \
+        	(MAX_STANDARD_TX_WEIGHT): {reveal_weight}"
+            );
         }
 
         Ok((unsigned_commit_tx, reveal_tx, recovery_key_pair))
@@ -691,10 +766,13 @@ mod tests {
         .to_string();
 
         assert!(
-      error.contains(&format!("reveal transaction weight greater than {MAX_STANDARD_TX_WEIGHT} (MAX_STANDARD_TX_WEIGHT): 402799")),
-      "{}",
-      error
-    );
+            error.contains(&format!(
+                "reveal transaction weight greater than {MAX_STANDARD_TX_WEIGHT} \
+      (MAX_STANDARD_TX_WEIGHT): 402799"
+            )),
+            "{}",
+            error
+        );
     }
 
     #[test]

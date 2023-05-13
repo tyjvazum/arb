@@ -1,6 +1,18 @@
 Arb Changelog
 =========
 
+[0.2.0](https://github.com/tyjvazum/arb/releases/tag/v0.2.0) - 2023-05-13
+---------------------------------------------------------------------
+
+### Added
+- Add support for Envelope Expansions
+- Add write support for Arbitrary Protocol Inscriptions https://github.com/tyjvazum/arb/issues/1
+- Add support for Content Compression https://github.com/tyjvazum/arb/issues/2
+- Add support for Inscription Metadata (JSON) https://github.com/tyjvazum/arb/issues/6
+- Add support for Non-tracked / Non-transferable Inscriptions https://github.com/tyjvazum/arb/issues/8
+- Add support for Off-chain Content (BitTorrent) https://github.com/tyjvazum/arb/issues/9
+- Add support for Optional Title, Subtitle, Description, License, and Comment Fields
+
 [0.1.0](https://github.com/tyjvazum/arb/releases/tag/v0.1.0) - 2023-04-05
 ---------------------------------------------------------------------
 
