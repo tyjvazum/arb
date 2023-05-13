@@ -1,7 +1,7 @@
 Arb Changelog
 =========
 
-[0.1.0](https://github.com/tyjvazum/arb/releases/tag/0.1.0) - 2023-04-05
+[0.1.0](https://github.com/tyjvazum/arb/releases/tag/v0.1.0) - 2023-04-05
 ---------------------------------------------------------------------
 
 ### Changed
