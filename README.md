@@ -47,7 +47,7 @@ Default Protocols
 - [ ] ✨ `bnw`: Bitcoin NFT Walls, enabling a `bid` to showcase a curated
   collection of NFTs that it owns.
 
-- [ ] 💎 `ord`: Bitcoin NFTs/Ordinals, enabling NFTs natively on Bitcoin by imbuing
+- [X] 💎 `ord`: Bitcoin NFTs/Ordinals, enabling NFTs natively on Bitcoin by imbuing
   satoshis with numismatic value, allowing them to be collected and traded as
   curios.
 
