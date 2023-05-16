@@ -421,7 +421,7 @@ impl<EC: 'static + Debug, EA: 'static + Debug> AcmeState<EC, EA> {
                         return Poll::Ready(Self::process_cert(self.get_mut(), pem, false));
                     },
                     Err(err) => {
-                        // TODO: replace key on some errors or high backoff_cnt?
+                        // QUESTION: replace key on some errors or high backoff_cnt?
                         self.wait = Some(Timer::after(Duration::from_secs(1 << self.backoff_cnt)));
                         self.backoff_cnt = (self.backoff_cnt + 1).min(16);
                         return Poll::Ready(Err(EventError::Order(err)));
