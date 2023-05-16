@@ -1,5 +1,6 @@
 use {
     super::*,
+    base64::Engine,
     include_dir::{
         include_dir,
         Dir,
@@ -276,7 +277,12 @@ fn inscription_with_metadata_gets_compressed() {
     };
 
     let parsed_md: serde_json::Value = serde_json::from_str(
-        str::from_utf8(&base64::decode(md.unwrap().to_str().unwrap()).unwrap()).unwrap(),
+        str::from_utf8(
+            &base64::engine::general_purpose::STANDARD
+                .decode(md.unwrap().to_str().unwrap())
+                .unwrap(),
+        )
+        .unwrap(),
     )
     .expect("Unable to parse metadata!");
 
@@ -368,7 +374,12 @@ fn inscription_with_compression_and_metadata() {
     };
 
     let parsed_md: serde_json::Value = serde_json::from_str(
-        str::from_utf8(&base64::decode(md.unwrap().to_str().unwrap()).unwrap()).unwrap(),
+        str::from_utf8(
+            &base64::engine::general_purpose::STANDARD
+                .decode(md.unwrap().to_str().unwrap())
+                .unwrap(),
+        )
+        .unwrap(),
     )
     .expect("Unable to parse metadata!");
 

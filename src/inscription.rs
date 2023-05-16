@@ -1,6 +1,7 @@
 use {
     super::*,
     crate::off_chain,
+    base64::Engine,
     bitcoin::{
         blockdata::{
             opcodes,
@@ -197,7 +198,10 @@ impl Inscription {
 
         let (encoded_metadata, metadata_bytes) = if let Some(md) = metadata_json {
             let bytes = md.clone().into_bytes();
-            (Some(base64::encode(&md)), Some(bytes))
+            (
+                Some(base64::engine::general_purpose::STANDARD.encode(&md)),
+                Some(bytes),
+            )
         } else {
             (None, None)
         };
@@ -322,7 +326,7 @@ impl Inscription {
                 protocol_properties: protocol_json.to_string(),
                 compression: Some("br base64".to_owned()),
                 offchain: None,
-                content: Some(base64::encode(&result)),
+                content: Some(base64::engine::general_purpose::STANDARD.encode(&result)),
                 content_hash: Some(sha256::Hash::hash(&result).into_inner().to_vec().to_hex()),
                 content_type: Some(Media::content_type_for_path(path)?.to_owned()),
                 content_metadata: encoded_metadata,
@@ -371,7 +375,7 @@ impl Inscription {
                 protocol_properties: protocol_json.to_string(),
                 compression: None,
                 offchain: None,
-                content: Some(base64::encode(&result)),
+                content: Some(base64::engine::general_purpose::STANDARD.encode(&result)),
                 content_hash: Some(sha256::Hash::hash(&result).into_inner().to_vec().to_hex()),
                 content_type: Some(Media::content_type_for_path(path)?.to_owned()),
                 content_metadata: encoded_metadata,
@@ -631,7 +635,9 @@ impl<'a> InscriptionParser<'a> {
                             };
 
                         if expansion.compression.is_some() {
-                            let content = base64::decode(expansion.content.unwrap()).unwrap();
+                            let content = base64::engine::general_purpose::STANDARD
+                                .decode(expansion.content.unwrap())
+                                .unwrap();
 
                             // Limit input data size to 10MB max to prevent DoS vector.
                             let max_input_size = 10000000;
