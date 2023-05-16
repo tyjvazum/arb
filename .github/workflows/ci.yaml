@@ -61,7 +61,7 @@ jobs:
     - uses: Swatinem/rust-cache@v2
 
     - name: Clippy
-      run: cargo clippy --all --all-targets
+      run: cargo clippy --all-targets --workspace
 
     - name: Format
       run: cargo +nightly fmt --all -- --check
@@ -94,7 +94,7 @@ jobs:
     - uses: Swatinem/rust-cache@v2
 
     - name: Test
-      run: cargo test --all
+      run: cargo test --workspace
 
   core:
     runs-on: ubuntu-latest
@@ -115,4 +115,4 @@ jobs:
       run: ./bin/install-bitcoin-core-linux
 
     - name: Test
-      run: cargo test --all -- --ignored
+      run: cargo test --workspace -- --ignored
